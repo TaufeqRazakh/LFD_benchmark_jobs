@@ -27,17 +27,17 @@ class LFDGrid
     self.lz_out = 0
   end
 
-  def mutate_grid(multiples)
-    for i in 1..multiples do
+  def mutate_grid(grid_multiple, orbital_multiple)
+    for i in 1..grid_multiple do
       mutate_grid_x(i)
       mutate_cell_x(i)
-      for j in 1..multiples do
+      for j in 1..grid_multiple do
         mutate_grid_y(j)
         mutate_cell_y(j)
-        for k in 1..multiples do
+        for k in 1..grid_multiple do
           mutate_grid_z(k)
           mutate_cell_z(k)
-          for n in 1..multiples do        
+          for n in 1..orbital_multiple do        
             mutate_orbitals(n)
             write_file(i,j,k,n)
           end
@@ -83,7 +83,7 @@ class LFDGrid
       f.write("#{self.dt}\n")
       f.flush
     }
-    puts "wrote to benchmark_system_#{a}_#{b}_#{c}_#{d}.in"
+    puts "wrote to benchmark_system wi multiple #{a}_#{b}_#{c}_#{d}"
   end
 
 end
@@ -94,11 +94,14 @@ OptionParser.new do |parser|
   parser.separator ""
   parser.separator "options"
 
-  parser.on("-m", "--multiple NUM", Integer, "The multiples for nx, ny nz and norb to generate files") do |mul|
-    options[:m] = mul
+  parser.on("-gMULTIPLE", "--grid MULTIPLE", Integer, "The multiples of nx, ny nz to generate files") do |mul|
+    options[:g] = mul
+  end
+  parser.on("-oMULTIPLE", "--orbital MULTIPLE", Integer, "The multiples of norb to generate files") do |mul|
+    options[:o] = mul
   end
 
 end.parse!
 
 lfd_grid = LFDGrid.new()
-lfd_grid.mutate_grid(options[:m])
+lfd_grid.mutate_grid(options[:g], options[:o])
