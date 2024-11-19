@@ -75,7 +75,7 @@ class LFDGrid
   end
 
   def write_file(a,b,c,d)
-    filename = "benchmark_system_#{a}_#{b}_#{c}_#{d}.in"
+    filename = "benchmark_system_#{self.nx_out}_#{self.ny_out}_#{self.nz_out}_#{self.orbitals_out}.in"
     File.open(filename, "w") { |f| 
       f.write("#{self.nx_out} #{self.ny_out} #{self.nz_out}\n")
       f.write("#{self.orbitals_out} #{self.occ}\n")
