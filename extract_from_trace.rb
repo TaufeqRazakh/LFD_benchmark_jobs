@@ -21,9 +21,9 @@ OptionParser.new do |parser|
 end.parse!
 
 base_path = options[:d]
-tracefiles = File.join(base_path,"lfd_kernels_O1_*")
+tracefiles = File.join(base_path,"lfd_unoptim_kernels*")
 outfile = CSV.open(File.join(base_path, options[:o]), "wb")
-outfile << ["nx", "ny", "nx", "norb","kernel time (ns)"]
+outfile << ["nx", "ny", "nz", "norb","kernel time (ns)"]
 
 def write_csv(mesh_options, kernel_options, out_file)
 	out_file << [mesh_options[:nx], mesh_options[:ny], mesh_options[:nz], mesh_options[:norb],
@@ -32,10 +32,13 @@ end
 
 Dir.glob(tracefiles).each do |file_name|
 	f_name = File.basename(file_name)
+  puts f_name
 	f_contents = File.readlines(file_name).filter {|v| /compute_cur/.match?(v)}
 
 	mesh_info = f_name.match(/_(?<nx>\d+)_(?<ny>\d+)_(?<nz>\d+)_(?<norb>\d+)/)	
-	kernel_line = f_contents[0].match(/\dcompute_cur\w+,\s+\d,\s+(?<ktime>\d+),/)
+  # kernel_line = f_contents[0].match(/\dcompute_cur\w+",\s+\d+,\s+(?<ktime>\d+),/)
+  kernel_line = f_contents[0].match(/\dcompute_cur\w+,\s+\d,\s+(?<ktime>\d+),/)
+  puts kernel_line
 
 	write_csv(mesh_info, kernel_line, outfile)
 end
